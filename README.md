@@ -1,63 +1,106 @@
-# marimo + uv Starter Template
+# `marimo` + `uv` + JAX template
 
-A starter template for [marimo](https://marimo.io) notebooks using [uv](https://github.com/astral-sh/uv) for dependency and project management. This template provides a modern Python development setup with best practices for notebook development.
+A starter template for [marimo](https://marimo.io) notebooks using [uv](https://github.com/astral-sh/uv) for dependency management and [JAX](https://github.com/jax-ml/jax) for numerical computing. This template provides a modern Python development setup with best practices for scientific computing and notebook development.
 
 ## Features
 
-- 🚀 Python 3.12+ support
+- 🚀 Python 3.13+ support
 - 📦 Fast dependency management with `uv`
-- 🧪 Testing setup with pytest
+- 🔢 JAX for high-performance numerical computing with GPU support
+- 🧠 Equinox for neural network modules
+- 📊 Visualization with Altair and treescope
+- 🧪 Testing setup with pytest and hypothesis
 - 🎯 Code quality with Ruff (linting + formatting)
+- 🔍 Type checking with ty
 - 👷 CI/CD with GitHub Actions
 - 📓 Interactive notebook development with marimo
 
 ## Prerequisites
 
-- Python 3.12 or higher
+- Python 3.13 or higher
 - [uv](https://github.com/astral-sh/uv) installed
 
-## Getting Started
+## Getting started
 
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/marimo-uv-starter-template
-   cd marimo-uv-starter-template
+   git clone https://github.com/eringrant/marimo-uv-jax
+   cd marimo-uv-jax
    ```
 
-2. Run the marimo editor:
+2. Install dependencies:
+
+   ```bash
+   uv sync
+   ```
+
+3. Run the marimo editor:
 
    ```bash
    uv run marimo edit
    ```
 
+   Or run a specific experiment:
+
+   ```bash
+   uv run marimo edit experiments/example.py
+   ```
+
 ## Development
 
-### Running Tests
+### Setup
+
+For development, install all dependency groups (including dev and test):
 
 ```bash
-# Run testing in your regular python files
+uv sync --all-groups
+```
+
+Install pre-commit hooks:
+
+```bash
+uv run prek install
+```
+
+### Testing
+
+```bash
 uv run pytest tests
-# Running testing in your marimo notebooks
-uv run pytest notebooks
 ```
 
 ### Linting and formatting
 
 ```bash
+# Run all pre-commit hooks on all files
+uv run prek run --all-files
+
+# Or run individual tools:
+# Check code style
 uv run ruff check .
+# Format code
 uv run ruff format .
 ```
 
-## Project Structure
+### Type checking
 
-```markdown
-├── .github/            # GitHub Actions workflows
-├── src/               # Source code
-│   └── app.py        # Sample marimo notebook
-├── tests/            # Test files
-├── pyproject.toml    # Project configuration
-└── uv.lock           # Dependency lock file
+```bash
+# Run type checking with ty
+uv run --group dev ty check
+```
+
+### Alternative: Using `just`
+
+A `justfile` is provided for convenience. Install [just](https://github.com/casey/just) and run `just` to see all available commands:
+
+```bash
+just setup          # Install deps + hooks
+just test           # Run tests
+just lint           # Run linting
+just typecheck      # Run type checking
+just ci             # Run full CI pipeline locally
+just marimo         # Open marimo editor
+just experiment example  # Run specific experiment
 ```
 
 ## License

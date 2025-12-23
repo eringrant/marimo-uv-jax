@@ -9,5 +9,18 @@ wheels/
 # Virtual environments
 .venv
 
+# Testing and coverage
+.pytest_cache/
+.hypothesis/
+htmlcov/
+.coverage
+*.cover
+
+# Node/prettier cache
+node_modules/
+
 # IDE
 !.vscode/
+
+# Marimo
+__marimo__/

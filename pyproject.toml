@@ -1,32 +1,172 @@
 [project]
-description = "A starter template for marimo notebooks with uv"
-name = "marimo-template"
-requires-python = ">=3.12"
+description = "A starter template for marimo notebooks with uv and JAX"
+name = "marimo-uv-jax"
+requires-python = ">=3.13"
 version = "0.1.0"
+dependencies = [
+  # Visualization
+  "marimo>=0.18.4",
+  "altair>=5.5.0",
+  "polars>=1.17.1",
+  "pyarrow>=19.0.0",
+  "treescope>=0.1.9",
+  ## Core scientific computing.
+  # Linux (assume CUDA GPU).
+  "nvidia-cublas>=13.0 ; sys_platform == 'linux'",
+  "jax[cuda13]>=0.4.38 ; sys_platform == 'linux'",
+  "jaxlib>=0.4 ; sys_platform == 'linux'",
+  # Apple Silicon (Metal GPU).
+  # https://github.com/jax-ml/jax/issues/26968
+  "jax-metal==0.1.1 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  "jaxlib>=0.4,<0.5.1 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  # Apple Intel (CPU).
+  "jax>=0.4.38 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+  "jaxlib>=0.4,<0.5 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+  # Everywhere else (CPU).
+  "jax>=0.4.38 ; sys_platform != 'linux' and sys_platform != 'darwin'",
+  "jaxlib>=0.4 ; sys_platform != 'linux' and sys_platform != 'darwin'",
+  ## Frameworks for scientific computing.
+  "equinox>=0.12.2",
+  "jaxtyping>=0.3.2",
+  "optax>=0.2.4",
+  "optimistix>=0.0.10",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/marimo_uv_jax"]
 
 [dependency-groups]
 dev = [
-  "pre-commit>=4.0.1",
-  "pytest>=8.3.4",
+  "ipdb>=0.13.13",
+  "ipython>=8.31.0",
+  "prek>=0.2.22",
   "ruff>=0.8.3",
-  "marimo>=0.13.14",
+  "ty>=0.0.1a10",
+]
+test = [
+  "hypothesis>=6.148.7",
+  "pytest>=8.4.1",
+  "pytest-cov>=6.2.1",
+  "pytest-custom-exit-code>=0.3.0",
+  "pytest-xdist>=3.6.1",
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["./src"]
-testpaths = ["tests", "marimo_template"]
+pythonpath = ["./src", "./experiments", "./reproductions"]
+testpaths = ["tests", "experiments", "reproductions"]
+addopts = [
+  '--suppress-no-test-exit-code',
+  '--pdbcls=IPython.terminal.debugger:TerminalPdb',
+  '--cov=marimo_uv_jax',
+  '--cov-report=term-missing',
+  '--cov-report=html',
+  '-n=auto',
+]
+
+[tool.coverage.run]
+source = ["marimo_uv_jax"]
+omit = [
+  "*/tests/*",
+  "*/__pycache__/*",
+  "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "@abstractmethod",
+]
 
 [tool.ruff]
-line-length = 100
-target-version = "py312"
+target-version = 'py313'
+line-length = 88
+indent-width = 2
+
+include = [
+  "pyproject.toml",
+  "*.py",
+  "*.pyi",
+]
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+  "stubs",
+]
 
 [tool.ruff.lint]
-select = [
-  "E", # pycodestyle
-  "F", # pyflakes
-  "I", # isort
-  "B", # flake8-bugbear
+select = ["D", "E", "F", "I", "N", "UP"]
+ignore = [
+  "E741",  # prefer notation consistency over legibility in all fonts
+  "F722",  # https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error
+  # Allow `TODO`s.
+  "TD003",
+  "FIX002",
+  # Allow many argument parameters.
+  "PLR0913",
+  # Allow long functions.
+  "PLR0915",
+  # Allow magic values.
+  "PLR2004",
+  # Allow `typing.Any`.
+  "ANN401",
+  # Allow f-strings in `logging`.
+  "G004",
 ]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-third-party = [
+  "jax",
+  "equinox",
+  "jaxtyping",
+  "optimistix",
+]
+known-first-party = [
+  "marimo_uv_jax",
+  "tests",
+  "experiments",
+  "reproductions",
+]
+
+[tool.ty.rules]
 
 [tool.marimo.ai]
 rules = "- prefer polars over pandas\n- make charts using altair"
@@ -40,4 +180,5 @@ format_on_save = true
 manager = "uv"
 
 [tool.marimo.runtime]
-pythonpath = ["./src"]
+pythonpath = ["./src", "./experiments", "./reproductions"]
+on_startup = "import marimo as mo"

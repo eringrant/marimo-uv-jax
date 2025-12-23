@@ -1,4 +1,53 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "schedule:monthly"]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+	"lockFileMaintenance": {
+		"enabled": true
+	},
+	"packageRules": [
+		{
+			"groupName": "JAX ecosystem",
+			"matchPackagePatterns": [
+				"^jax",
+				"equinox",
+				"optax",
+				"optimistix",
+				"jaxtyping",
+				"nvidia-cublas"
+			]
+		},
+		{
+			"groupName": "Visualization",
+			"matchPackageNames": [
+				"marimo",
+				"altair",
+				"polars",
+				"pyarrow",
+				"treescope"
+			]
+		},
+		{
+			"groupName": "Development tools",
+			"matchPackagePatterns": [
+				"^pytest",
+				"^ruff$",
+				"hypothesis",
+				"^ty$",
+				"prek",
+				"pre-commit",
+				"ipdb",
+				"ipython"
+			]
+		},
+		{
+			"description": "Disable jaxlib updates due to platform-specific constraints",
+			"matchPackageNames": ["jaxlib", "jax-metal"],
+			"enabled": false
+		},
+		{
+			"description": "Constrain Python to <3.14 (jaxlib 0.4.38 for Intel Mac only has cp313 wheels)",
+			"matchPackageNames": ["python"],
+			"allowedVersions": "<3.14"
+		}
+	]
 }

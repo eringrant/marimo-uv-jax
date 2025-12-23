@@ -1,0 +1,23 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: "0 8 * * 1" # Weekly on Monday at 8 AM UTC
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Renovate
+        uses: renovatebot/github-action@v40.3.2
+        env:
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository }}
+          RENOVATE_FORK_PROCESSING: enabled
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

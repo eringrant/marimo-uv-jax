@@ -17,14 +17,14 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Set up Python
-        run: uv python install
-
       - name: Install the project
-        run: uv sync --all-extras --dev
+        run: uv sync --all-groups
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run prek run --all-files
+
+      - name: Type check
+        run: uv run --group dev ty check
 
       - name: Run tests
-        run: uv run pytest tests src
+        run: uv run pytest
