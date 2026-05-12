@@ -1,0 +1,26 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Testing and coverage
+.pytest_cache/
+.hypothesis/
+htmlcov/
+.coverage
+*.cover
+
+# Node/prettier cache
+node_modules/
+
+# IDE
+!.vscode/
+
+# Marimo
+__marimo__/
