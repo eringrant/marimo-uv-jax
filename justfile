@@ -18,6 +18,10 @@ lint:
 test:
   uv run pytest
 
+# Run tests with coverage and xdist parallelism
+test-cov:
+  uv run pytest --cov=marimo_uv_jax --cov-report=term-missing -n=auto
+
 # Run type checking
 typecheck:
   uv run --group dev ty check

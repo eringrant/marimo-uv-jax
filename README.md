@@ -6,7 +6,7 @@ A starter template for [marimo](https://marimo.io) notebooks using [uv](https://
 
 - 🚀 Python 3.13+ support
 - 📦 Fast dependency management with `uv`
-- 🔢 JAX for high-performance numerical computing with GPU support
+- 🔢 JAX for high-performance numerical computing (CUDA GPU on Linux; CPU on macOS)
 - 🧠 Equinox for neural network modules
 - 📊 Visualization with Altair and treescope
 - 🧪 Testing setup with pytest and hypothesis

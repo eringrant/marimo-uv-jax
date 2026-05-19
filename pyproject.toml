@@ -15,11 +15,11 @@ dependencies = [
   "nvidia-cublas>=13.0 ; sys_platform == 'linux'",
   "jax[cuda13]>=0.4.38 ; sys_platform == 'linux'",
   "jaxlib>=0.4 ; sys_platform == 'linux'",
-  # Apple Silicon (Metal GPU).
-  # https://github.com/jax-ml/jax/issues/26968
-  "jax-metal==0.1.1 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
-  "jaxlib>=0.4,<0.5.1 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
-  # Apple Intel (CPU).
+  # Apple Silicon (CPU). jax-metal's last release (0.1.1) pins JAX to ~0.4.x
+  # and has known gaps in lax control-flow primitives.
+  "jax>=0.4.38 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  "jaxlib>=0.4 ; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  # Apple Intel (CPU). jaxlib has no working x86_64 macOS wheel >=0.5.
   "jax>=0.4.38 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
   "jaxlib>=0.4,<0.5 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
   # Everywhere else (CPU).
@@ -56,15 +56,16 @@ test = [
 ]
 
 [tool.pytest.ini_options]
+# experiments/ and reproductions/ are marimo notebooks; they import the package
+# but are not pytest collection targets.
 pythonpath = ["./src", "./experiments", "./reproductions"]
-testpaths = ["tests", "experiments", "reproductions"]
+testpaths = ["tests"]
+# Coverage and xdist each spin up a fresh JAX backend per worker and regenerate
+# htmlcov/ on every run. They are opt-in:
+#   uv run pytest --cov=marimo_uv_jax --cov-report=term-missing -n=auto
 addopts = [
   '--suppress-no-test-exit-code',
   '--pdbcls=IPython.terminal.debugger:TerminalPdb',
-  '--cov=marimo_uv_jax',
-  '--cov-report=term-missing',
-  '--cov-report=html',
-  '-n=auto',
 ]
 
 [tool.coverage.run]
@@ -126,19 +127,6 @@ select = ["D", "E", "F", "I", "N", "UP"]
 ignore = [
   "E741",  # prefer notation consistency over legibility in all fonts
   "F722",  # https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error
-  # Allow `TODO`s.
-  "TD003",
-  "FIX002",
-  # Allow many argument parameters.
-  "PLR0913",
-  # Allow long functions.
-  "PLR0915",
-  # Allow magic values.
-  "PLR2004",
-  # Allow `typing.Any`.
-  "ANN401",
-  # Allow f-strings in `logging`.
-  "G004",
 ]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.

@@ -404,20 +404,6 @@ with-cuda = [
 ]
 
 [[package]]
-name = "jax-metal"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jax", version = "0.4.38", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", version = "0.4.38", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "six", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "wheel", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/dc/6d8fbfc29d902251cf333414cf7dcfaf4b252a9920c881354584ed36270d/jax_metal-0.1.1-py3-none-macosx_13_0_arm64.whl", hash = "sha256:f1dbfecb298cdd3ba6da3ad6dc9a2adb63d71741f8b8ece28c296b32d608b6c8", size = 41179678, upload-time = "2024-10-08T16:56:31.563Z" },
-]
-
-[[package]]
 name = "jaxlib"
 version = "0.4.38"
 source = { registry = "https://pypi.org/simple" }
@@ -632,10 +618,9 @@ source = { editable = "." }
 dependencies = [
     { name = "altair" },
     { name = "equinox" },
-    { name = "jax", version = "0.4.38", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'darwin'" },
+    { name = "jax", version = "0.4.38", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin')" },
     { name = "jax", version = "0.8.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'darwin'" },
     { name = "jax", version = "0.8.2", source = { registry = "https://pypi.org/simple" }, extra = ["cuda13"], marker = "sys_platform == 'linux'" },
-    { name = "jax-metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
     { name = "jaxlib", version = "0.4.38", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin')" },
     { name = "jaxlib", version = "0.8.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'darwin'" },
     { name = "jaxtyping" },
@@ -669,11 +654,11 @@ requires-dist = [
     { name = "altair", specifier = ">=5.5.0" },
     { name = "equinox", specifier = ">=0.12.2" },
     { name = "jax", marker = "sys_platform != 'darwin' and sys_platform != 'linux'", specifier = ">=0.4.38" },
+    { name = "jax", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'", specifier = ">=0.4.38" },
     { name = "jax", marker = "platform_machine == 'x86_64' and sys_platform == 'darwin'", specifier = ">=0.4.38" },
     { name = "jax", extras = ["cuda13"], marker = "sys_platform == 'linux'", specifier = ">=0.4.38" },
-    { name = "jax-metal", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'", specifier = "==0.1.1" },
     { name = "jaxlib", marker = "sys_platform != 'darwin' and sys_platform != 'linux'", specifier = ">=0.4" },
-    { name = "jaxlib", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'", specifier = ">=0.4,<0.5.1" },
+    { name = "jaxlib", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'", specifier = ">=0.4" },
     { name = "jaxlib", marker = "platform_machine == 'x86_64' and sys_platform == 'darwin'", specifier = ">=0.4,<0.5" },
     { name = "jaxlib", marker = "sys_platform == 'linux'", specifier = ">=0.4" },
     { name = "jaxtyping", specifier = ">=0.3.2" },
@@ -1548,15 +1533,6 @@ wheels = [
 ]
 
 [[package]]
-name = "six"
-version = "1.17.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
-]
-
-[[package]]
 name = "sortedcontainers"
 version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1713,13 +1689,4 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/86/eb/20b6cdf273913d0ad05a6a14aed4b9a85591c18a987a3d47f20fa13dcc47/websockets-15.0.1-cp313-cp313-win32.whl", hash = "sha256:ba9e56e8ceeeedb2e080147ba85ffcd5cd0711b89576b83784d8605a7df455fa", size = 176393, upload-time = "2025-03-05T20:02:53.814Z" },
     { url = "https://files.pythonhosted.org/packages/1b/6c/c65773d6cab416a64d191d6ee8a8b1c68a09970ea6909d16965d26bfed1e/websockets-15.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:e09473f095a819042ecb2ab9465aee615bd9c2028e4ef7d933600a8401c79561", size = 176837, upload-time = "2025-03-05T20:02:55.237Z" },
     { url = "https://files.pythonhosted.org/packages/fa/a8/5b41e0da817d64113292ab1f8247140aac61cbf6cfd085d6a0fa77f4984f/websockets-15.0.1-py3-none-any.whl", hash = "sha256:f7a866fbc1e97b5c617ee4116daaa09b722101d4a3c170c787450ba409f9736f", size = 169743, upload-time = "2025-03-05T20:03:39.41Z" },
-]
-
-[[package]]
-name = "wheel"
-version = "0.45.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8a/98/2d9906746cdc6a6ef809ae6338005b3f21bb568bea3165cfc6a243fdc25c/wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729", size = 107545, upload-time = "2024-11-23T00:18:23.513Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248", size = 72494, upload-time = "2024-11-23T00:18:21.207Z" },
 ]

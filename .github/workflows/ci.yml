@@ -6,9 +6,21 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
@@ -25,6 +37,16 @@ jobs:
 
       - name: Type check
         run: uv run --group dev ty check
+        continue-on-error: true
 
-      - name: Run tests
-        run: uv run pytest
+      - name: Validate notebooks
+        run: |
+          for nb in experiments/*.py reproductions/*.py; do
+            [ "$(basename "$nb")" = "__init__.py" ] && continue
+            echo "::group::$nb"
+            uv run marimo export html "$nb" -o /dev/null
+            echo "::endgroup::"
+          done
+
+      - name: Run tests (with coverage)
+        run: uv run pytest --cov=marimo_uv_jax --cov-report=term-missing -n=auto

@@ -37,15 +37,16 @@ def _():
 @app.cell
 def _(jax):
   # Create a simple dataset
-  key = jax.random.PRNGKey(42)
+  key = jax.random.key(42)
   return (key,)
 
 
 @app.cell
 def _(jax, jnp, key):
-  # Generate random data
-  x = jax.random.normal(key, (100, 10))
-  y = jnp.sum(x, axis=1) + jax.random.normal(key, (100,)) * 0.1
+  # Generate random data (split the key so x and the noise are independent)
+  _x_key, _noise_key = jax.random.split(key)
+  x = jax.random.normal(_x_key, (100, 10))
+  y = jnp.sum(x, axis=1) + jax.random.normal(_noise_key, (100,)) * 0.1
   return x, y
 
 

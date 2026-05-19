@@ -7,8 +7,8 @@
 	"packageRules": [
 		{
 			"groupName": "JAX ecosystem",
-			"matchPackagePatterns": [
-				"^jax",
+			"matchPackageNames": [
+				"/^jax/",
 				"equinox",
 				"optax",
 				"optimistix",
@@ -28,11 +28,11 @@
 		},
 		{
 			"groupName": "Development tools",
-			"matchPackagePatterns": [
-				"^pytest",
-				"^ruff$",
+			"matchPackageNames": [
+				"/^pytest/",
+				"/^ruff$/",
 				"hypothesis",
-				"^ty$",
+				"/^ty$/",
 				"prek",
 				"pre-commit",
 				"ipdb",
@@ -41,7 +41,7 @@
 		},
 		{
 			"description": "Disable jaxlib updates due to platform-specific constraints",
-			"matchPackageNames": ["jaxlib", "jax-metal"],
+			"matchPackageNames": ["jaxlib"],
 			"enabled": false
 		},
 		{

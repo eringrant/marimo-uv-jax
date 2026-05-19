@@ -10,42 +10,25 @@ repos:
       - id: ruff-check
         args: [--fix, --exit-non-zero-on-fix]
         types_or: [python, pyi]
-      # Run the formatter another time, until
-      # https://github.com/astral-sh/ruff/issues/9216 is closed.
+      # ruff-check --fix above can reintroduce formatting; reformat after.
       - id: ruff-format
         types_or: [python, pyi]
-
-  - repo: https://github.com/biomejs/pre-commit
-    rev: v2.1.2
-    hooks:
-      - id: biome-check
-        args: [--verbose]
-        files: "\\.(jsx?|tsx?|c(js|ts)|m(js|ts)|d\\.(ts|cts|mts)|json|css|svelte|vue|astro|graphql|gql)$"
-
-  # Until biome supports YAML, HTML, Markdown, TOML (https://biomejs.dev/internals/language-support).
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        files: "\\.(yaml|yml|html|md|toml)$"
-        args:
-          - --tab-width=2
-          - --trailing-comma=es5
-          - --no-semi
-        additional_dependencies:
-          - prettier@v4.0.0-alpha.8
-          - "prettier-plugin-toml@2.0.1"
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      # Essential: not covered by ruff/ty
+      - id: check-toml
+      - id: check-yaml
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        types_or: [yaml, toml, markdown, json]
+      # Repository hygiene not covered by ruff.
       - id: check-added-large-files
         args: ["--maxkb=2048"]
       - id: check-merge-conflict
       - id: detect-private-key
       - id: check-case-conflict
-      # Potentially useful: depending on project needs
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: check-symlinks
