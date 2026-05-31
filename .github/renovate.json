@@ -1,4 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "schedule:monthly"]
+  "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "jax and jaxlib are version-locked; let jax drive and jaxlib follow transitively.",
+      "matchPackageNames": ["jaxlib"],
+      "enabled": false
+    }
+  ]
 }
