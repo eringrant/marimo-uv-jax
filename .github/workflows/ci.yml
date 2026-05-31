@@ -6,25 +6,48 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8
         with:
           enable-cache: true
 
-      - name: Set up Python
-        run: uv python install
-
       - name: Install the project
-        run: uv sync --all-extras --dev
+        run: uv sync --all-groups
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run prek run --all-files
 
-      - name: Run tests
-        run: uv run pytest tests src
+      - name: Type check
+        run: uv run --all-groups ty check
+
+      - name: Validate notebooks
+        # Export to a real relative path (not /dev/null, which native-Windows
+        # Python does not treat as the null device) and discard it.
+        run: |
+          while read -r nb; do
+            echo "::group::$nb"
+            uv run marimo export html "$nb" -o _validate.html
+            echo "::endgroup::"
+          done < <(find notebooks -name '*.py' ! -name '__init__.py')
+          rm -f _validate.html
+
+      - name: Run tests (with coverage)
+        run: uv run pytest --cov=marimo_uv_jax --cov-report=term-missing -n=auto

@@ -9,5 +9,22 @@ wheels/
 # Virtual environments
 .venv
 
-# IDE
-!.vscode/
+# Testing and coverage
+.pytest_cache/
+.hypothesis/
+htmlcov/
+.coverage
+*.cover
+
+# Tool caches
+.ruff_cache/
+.ty_cache/
+
+# OS
+.DS_Store
+
+# Marimo
+__marimo__/
+
+# Node
+node_modules/

@@ -1,65 +1,42 @@
-# marimo + uv Starter Template
+# `marimo` + `uv` + JAX template
 
-A starter template for [marimo](https://marimo.io) notebooks using [uv](https://github.com/astral-sh/uv) for dependency and project management. This template provides a modern Python development setup with best practices for notebook development.
+A starter template for [marimo](https://marimo.io) notebooks using
+[uv](https://github.com/astral-sh/uv) for dependency management and
+[JAX](https://github.com/jax-ml/jax) for numerical computing.
 
-## Features
+## Getting started
 
-- 🚀 Python 3.12+ support
-- 📦 Fast dependency management with `uv`
-- 🧪 Testing setup with pytest
-- 🎯 Code quality with Ruff (linting + formatting)
-- 👷 CI/CD with GitHub Actions
-- 📓 Interactive notebook development with marimo
+Use this template (GitHub's "Use this template", or clone it), then:
 
-## Prerequisites
+```bash
+uv sync                                               # install
+uv run marimo edit                                    # open the editor
+uv run marimo edit notebooks/experiments/example.py   # or a specific notebook
+```
 
-- Python 3.12 or higher
-- [uv](https://github.com/astral-sh/uv) installed
+To make it your own, rename the `src/marimo_uv_jax/` directory
+and update files returned by:
 
-## Getting Started
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/yourusername/marimo-uv-starter-template
-   cd marimo-uv-starter-template
-   ```
-
-2. Run the marimo editor:
-
-   ```bash
-   uv run marimo edit
-   ```
+```bash
+git grep -lI 'marimo[-_]uv[-_]jax'
+```
 
 ## Development
 
-### Running Tests
+```bash
+uv sync --all-groups          # dev + test deps
+uv run prek install           # pre-commit hooks
+uv run pytest                 # tests
+uv run prek run --all-files   # lint + format
+uv run --all-groups ty check  # type check
+```
+
+A `justfile` wraps these. Install [just](https://github.com/casey/just) and run
+it to list recipes:
 
 ```bash
-# Run testing in your regular python files
-uv run pytest tests
-# Running testing in your marimo notebooks
-uv run pytest notebooks
+just
 ```
-
-### Linting and formatting
-
-```bash
-uv run ruff check .
-uv run ruff format .
-```
-
-## Project Structure
-
-```markdown
-├── .github/            # GitHub Actions workflows
-├── src/               # Source code
-│   └── app.py        # Sample marimo notebook
-├── tests/            # Test files
-├── pyproject.toml    # Project configuration
-└── uv.lock           # Dependency lock file
-```
-
 ## License
 
 MIT

@@ -1,4 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "schedule:monthly"]
+  "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "jax and jaxlib are version-locked; let jax drive and pin jaxlib via pyproject ranges.",
+      "matchPackageNames": ["jaxlib"],
+      "enabled": false
+    },
+    {
+      "description": "jaxlib 0.4.38 has no Intel-Mac wheels past cp313, so cap Python below 3.14.",
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.14"
+    }
+  ]
 }
