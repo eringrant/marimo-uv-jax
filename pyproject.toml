@@ -1,5 +1,5 @@
 [project]
-description = "A starter template for marimo notebooks with uv"
+description = "A starter template for marimo notebooks with uv and JAX"
 name = "marimo-uv-jax"
 requires-python = ">=3.14"
 version = "0.1.0"
@@ -8,8 +8,23 @@ dependencies = [
   "marimo>=0.18.4",
   "altair>=5.5.0",
   "polars>=1.17.1",
-  "pyarrow>=19.0.0",
   "treescope>=0.1.9",
+  ## Core scientific computing.
+  # Modern JAX (>=0.7.2, the first release with CUDA 13 wheels); jaxlib is
+  # pulled transitively. Intel (x86_64) macOS is not supported.
+  "jax>=0.7.2",
+  ## Frameworks for scientific computing.
+  "equinox>=0.12.2",
+  "jaxtyping>=0.3.2",
+  "optax>=0.2.4",
+  "optimistix>=0.0.10",
+]
+
+[project.optional-dependencies]
+# NVIDIA GPU on Linux: `uv sync --extra cuda`. Adds the CUDA 13 jaxlib plugin on
+# top of the modern CPU jax above; no-op on macOS / non-Linux.
+cuda = [
+  "jax[cuda13]>=0.7.2 ; sys_platform == 'linux'",
 ]
 
 [build-system]
@@ -28,6 +43,7 @@ dev = [
   "ty>=0.0.1a10",
 ]
 test = [
+  "beartype>=0.19.0",
   "hypothesis>=6.148.7",
   "pytest>=8.4.1",
   "pytest-cov>=6.2.1",
@@ -37,8 +53,8 @@ test = [
 [tool.pytest.ini_options]
 pythonpath = ["./src"]
 testpaths = ["tests"]
-# Coverage and xdist regenerate htmlcov/ and add per-worker overhead, so they are
-# opt-in:
+# Coverage and xdist each spin up a fresh JAX backend per worker and regenerate
+# htmlcov/ on every run. They are opt-in:
 #   uv run pytest --cov=marimo_uv_jax --cov-report=term-missing -n=auto
 
 [tool.coverage.run]
@@ -99,6 +115,9 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["D", "E", "F", "I", "N", "UP"]
+ignore = [
+  "E741",  # prefer notation consistency over legibility in all fonts
+]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -112,10 +131,28 @@ convention = "google"
 
 [tool.ruff.lint.isort]
 force-single-line = true
+known-third-party = [
+  "jax",
+  "equinox",
+  "jaxtyping",
+  "optax",
+  "optimistix",
+]
 known-first-party = [
   "marimo_uv_jax",
   "tests",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error
+# jaxtyping puts dimension strings like Float[Array, "batch in_size"] inside
+# annotations, which ruff reads as a forward-reference syntax error (F722).
+# Scope the ignore to the jaxtyping-using package so real malformed annotations
+# elsewhere are still caught.
+"src/marimo_uv_jax/*.py" = ["F722"]
+# marimo passes imported names (incl. PascalCase classes) and module-level
+# constants into cell functions as arguments, which trips N803/N806.
+"notebooks/**/*.py" = ["N803", "N806"]
 
 [tool.marimo.ai]
 rules = "- prefer polars over pandas\n- make charts using altair"
