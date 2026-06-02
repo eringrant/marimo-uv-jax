@@ -18,9 +18,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # macos-latest is arm64; macos-15-intel is Intel x86_64 (the JAX 0.4.x path).
+        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    # Run every step under bash (Git Bash on Windows) so the notebook-validation
+    # loop is portable across all runners.
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
