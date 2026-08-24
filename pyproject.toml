@@ -12,7 +12,7 @@ dependencies = [
   ## Core scientific computing.
   # Apple Intel (x86_64 macOS) is the one exception: jaxlib has no working wheel
   # >=0.5 there, so it stays on the JAX 0.4.x line (and so gets no CUDA 13).
-  "jax>=0.4.38,<0.5 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+  "jax>=0.11.1,<0.12; sys_platform == 'darwin' and platform_machine == 'x86_64'",
   "jaxlib>=0.4,<0.5 ; sys_platform == 'darwin' and platform_machine == 'x86_64'",
   # Everywhere else: modern JAX (>=0.7.2, the first release with CUDA 13 wheels);
   # jaxlib is pulled transitively.
